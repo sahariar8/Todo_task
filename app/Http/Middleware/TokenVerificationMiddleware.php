@@ -29,7 +29,9 @@ class TokenVerificationMiddleware
         }
 
         // Attach decoded email to request headers
-        $request->headers->set('email', $result);
+        $request->attributes->set('email', $result['email']);
+        $request->attributes->set('user_id', $result['id']);
+
         return $next($request);
     }
 }

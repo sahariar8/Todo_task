@@ -15,7 +15,7 @@ class JWTToken
         //
     }
 
-     public static function CreateToken($userEmail, $userID)
+    public static function CreateToken($userEmail, $userID)
     {
         $key = env('JWT_KEY');
         $payload = [
@@ -53,7 +53,11 @@ class JWTToken
 
         try {
             $decode = JWT::decode($token, new Key($key, 'HS256'));
-            return $decode->userEmail; // Return just the email if success
+            return [
+                'email' => $decode->userEmail,
+                'id' => $decode->userID
+            ];
+            // Return just the email if success
         } catch (\Exception $e) {
             return "unauthorized";
         }
