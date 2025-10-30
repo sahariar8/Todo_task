@@ -19,7 +19,7 @@ class TaskController extends Controller
 
     public function addTask(Request $request)
     {
-       $userId = $request->get('user_id');
+        $userId = $request->get('user_id');
 
         #check if user is authenticated
         if (!$userId) {
@@ -38,6 +38,42 @@ class TaskController extends Controller
         return response()->json([
             'status' => 'success',
             'message' => 'Task added successfully',
+        ], 200);
+    }
+
+    public function updateTask(Request $request, $id)
+    {
+        $task = Task::find($id);
+
+        if (!$task) {
+            return response()->json([
+                'status' => 'failed',
+                'message' => 'Task not found'
+            ], 404);
+        }
+
+        // Only update allowed fields
+        $validated = $request->validate([
+            'title' => 'sometimes|string',
+            'description' => 'sometimes|string',
+        ]);
+
+        $task->update($validated); // no need to call save()
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Task updated successfully',
+            'task' => $task
+        ]);
+    }
+
+    public function deleteTask($id)
+    {
+        $task = Task::find($id);
+        $task->delete();
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Task deleted successfully',
         ], 200);
     }
 }
